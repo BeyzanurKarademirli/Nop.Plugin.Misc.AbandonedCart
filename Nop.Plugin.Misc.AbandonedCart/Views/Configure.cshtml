@@ -1,0 +1,114 @@
+@model ConfigurationModel
+@{
+    Layout = "_ConfigurePlugin";
+    var logSearchModel = new AbandonedCartLogSearchModel();
+}
+
+<form asp-controller="AbandonedCart" asp-action="Configure" method="post">
+    <div class="cards-group">
+        <div class="card card-default">
+            <div class="card-header">
+                <i class="fas fa-shopping-cart mr-2"></i>Terk Edilmiş Sepet Hatırlatıcı Ayarları
+            </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-label asp-for="Enabled" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="Enabled" />
+                        <span asp-validation-for="Enabled"></span>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-label asp-for="ReminderDelayHours" />
+                    </div>
+                    <div class="col-md-9">
+                        <input class="form-control" type="text" asp-for="ReminderDelayHours" />
+                        <span asp-validation-for="ReminderDelayHours"></span>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-label asp-for="EmailSubject" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="EmailSubject" />
+                        <span asp-validation-for="EmailSubject"></span>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-md-9 offset-md-3">
+                        <button type="submit" name="save" class="btn btn-primary">
+                            <i class="far fa-save mr-1"></i>@T("Admin.Common.Save")
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-default">
+            <div class="card-header">
+                <i class="fas fa-history mr-2"></i>Geçmiş Gönderilen Hatırlatma E-Postaları (Loglar)
+            </div>
+            <div class="card-body">
+                @await Html.PartialAsync("Table", new DataTablesModel
+                {
+                    Name = "abandonedcart-log-grid",
+                    UrlRead = new DataUrl("LogList", "AbandonedCart", null),
+                    SearchButtonId = "btnSearchLogs",
+                    Length = logSearchModel.PageSize,
+                    LengthMenu = logSearchModel.AvailablePageSizes,
+                    Filters = new List<FilterParameter>
+                    {
+                        new FilterParameter(nameof(AbandonedCartLogSearchModel.SearchEmail))
+                    },
+                    ColumnCollection = new List<ColumnProperty>
+                    {
+                        new ColumnProperty(nameof(AbandonedCartLogModel.CustomerId))
+                        {
+                            Title = "Müşteri ID",
+                            Width = "100"
+                        },
+                        new ColumnProperty(nameof(AbandonedCartLogModel.CustomerEmail))
+                        {
+                            Title = "Müşteri E-Posta",
+                            Width = "250"
+                        },
+                        new ColumnProperty(nameof(AbandonedCartLogModel.CartItemCount))
+                        {
+                            Title = "Sepetteki Ürün Adedi",
+                            Width = "150"
+                        },
+                        new ColumnProperty(nameof(AbandonedCartLogModel.LastCartItemUpdatedOnUtc))
+                        {
+                            Title = "Sepet Son Güncellenme",
+                            Width = "200",
+                            Render = new RenderDate()
+                        },
+                        new ColumnProperty(nameof(AbandonedCartLogModel.SentOnUtc))
+                        {
+                            Title = "E-Posta Gönderilme Tarihi",
+                            Width = "200",
+                            Render = new RenderDate()
+                        }
+                    }
+                })
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function () {
+        if ($.validator && $.validator.methods) {
+            $.validator.methods.number = function (value, element) { return true; };
+            $.validator.methods.min = function (value, element) { return true; };
+            $.validator.methods.range = function (value, element) { return true; };
+        }
+    });
+</script>

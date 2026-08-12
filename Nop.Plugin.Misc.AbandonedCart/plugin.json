@@ -1,0 +1,11 @@
+{
+  "Group": "Misc",
+  "FriendlyName": "Abandoned Cart Reminder",
+  "SystemName": "Misc.AbandonedCart",
+  "Version": "1.00",
+  "SupportedVersions": [ "4.50" ],
+  "Author": "Beyzanur",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.Misc.AbandonedCart.dll",
+  "Description": "Sepette ürün unutan müşterilere otomatik hatırlatma e-postaları gönderen eklenti."
+}
